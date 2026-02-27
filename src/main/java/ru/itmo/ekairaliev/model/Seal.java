@@ -30,21 +30,19 @@ public final class Seal {
         // Программа обновляет автоматически.
         private Instant updatedAt;
 
+        //конструктор 1
+
         public Seal(long id, long sampleId, SealStatus status, String sealNumber, String ownerUsername, Instant updatedAt, Instant createdAt) {
             this.id = id;
             this.sampleId = sampleId;
             this.status = status;
-            this.setSealNumber(sealNumber);
+            this.sealNumber = sealNumber;
             this.ownerUsername = ownerUsername;
             this.updatedAt = updatedAt;
             this.createdAt = createdAt;
         }
 
-        public Seal(long id, Instant createdAt) {
-            this.id = id;
-            this.createdAt = createdAt;
-        }
-
+        //геттеры
         public long getId() {
             return id;
         }
@@ -73,17 +71,13 @@ public final class Seal {
             return sampleId;
         }
 
+        //сеттеры
+
         public void setSampleId(long sampleId) {
             this.sampleId = sampleId;
         }
 
-        public void setSealNumber(String sealNumber) {
-            if (sealNumber !=null && !sealNumber.isEmpty () && sealNumber.length() <= 64){
-                this.sealNumber = sealNumber;
-            } else {
-                throw new IllegalArgumentException("Invalid sealNumber: " +sealNumber);
-            }
-        }
+        public void setSealNumber(String sealNumber) { this.sealNumber = sealNumber; }
 
         public void setStatus(SealStatus status) {
             this.status = status;
@@ -99,6 +93,8 @@ public final class Seal {
         Seal seal = (Seal) o;
         return id == seal.id && sampleId == seal.sampleId && Objects.equals(sealNumber, seal.sealNumber) && status == seal.status && Objects.equals(ownerUsername, seal.ownerUsername) && Objects.equals(createdAt, seal.createdAt) && Objects.equals(updatedAt, seal.updatedAt);
     }
+    //помечаем тачем что объект изменили
+    public void touch() { this.updatedAt = Instant.now(); }
 
     @Override
     public int hashCode() {
