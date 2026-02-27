@@ -3,6 +3,7 @@ package ru.itmo.ekairaliev.model;
 import java.time.Instant;
 import java.util.Objects;
 
+
 public final class Seal {
         // Уникальный номер пломбы. Программа назначает сама.
         private final long id;
@@ -27,7 +28,7 @@ public final class Seal {
 
         // Когда изменяли (например, ломали).
         // Программа обновляет автоматически.
-        private final Instant updatedAt;
+        private Instant updatedAt;
 
         public Seal(long id, long sampleId, SealStatus status, String sealNumber, String ownerUsername, Instant updatedAt, Instant createdAt) {
             this.id = id;
@@ -39,10 +40,9 @@ public final class Seal {
             this.createdAt = createdAt;
         }
 
-        public Seal(long id, Instant createdAt, Instant updatedAt) {
+        public Seal(long id, Instant createdAt) {
             this.id = id;
             this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
         }
 
         public long getId() {
@@ -83,7 +83,6 @@ public final class Seal {
             } else {
                 throw new IllegalArgumentException("Invalid sealNumber: " +sealNumber);
             }
-            this.sealNumber = sealNumber;
         }
 
         public void setStatus(SealStatus status) {
@@ -119,4 +118,5 @@ public final class Seal {
                 '}';
     }
 }
+
 
