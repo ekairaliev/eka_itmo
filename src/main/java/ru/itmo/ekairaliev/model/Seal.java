@@ -87,14 +87,15 @@ public final class Seal {
             this.ownerUsername = ownerUsername;
         }
 
+    //помечаем тачем что объект изменили
+    public void touch() { this.updatedAt = Instant.now(); }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Seal seal = (Seal) o;
         return id == seal.id && sampleId == seal.sampleId && Objects.equals(sealNumber, seal.sealNumber) && status == seal.status && Objects.equals(ownerUsername, seal.ownerUsername) && Objects.equals(createdAt, seal.createdAt) && Objects.equals(updatedAt, seal.updatedAt);
     }
-    //помечаем тачем что объект изменили
-    public void touch() { this.updatedAt = Instant.now(); }
 
     @Override
     public int hashCode() {
