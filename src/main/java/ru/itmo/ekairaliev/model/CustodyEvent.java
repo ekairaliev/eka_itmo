@@ -12,7 +12,6 @@ public final class CustodyEvent {
     private String location;            // до 64, не пусто
     private String comment;             // до 128, можно пусто
     private Instant transferredAt;      // если не задано — now
-
     private String ownerUsername;       // кто выполнил действие
     private final Instant createdAt;    // назначается программой
 
