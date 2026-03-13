@@ -10,7 +10,7 @@ public final class Seal {
 
         // К какому образцу относится (id образца).
         // Должен ссылаться на реально существующий Sample.
-        private long sampleId;
+        private final long sampleId;
 
         // Номер пломбы (например "SEAL-9911").
         // Нельзя пустое. До 64 символов.
@@ -32,14 +32,14 @@ public final class Seal {
 
         //конструктор 1
 
-        public Seal(long id, long sampleId, SealStatus status, String sealNumber, String ownerUsername, Instant updatedAt, Instant createdAt) {
+        public Seal(long id, long sampleId, SealStatus status, String sealNumber, String ownerUsername, Instant createdAt, Instant updatedAt) {
             this.id = id;
             this.sampleId = sampleId;
             this.status = status;
             this.sealNumber = sealNumber;
             this.ownerUsername = ownerUsername;
-            this.updatedAt = updatedAt;
             this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
         }
 
         //геттеры
@@ -73,10 +73,6 @@ public final class Seal {
 
         //сеттеры
 
-        public void setSampleId(long sampleId) {
-            this.sampleId = sampleId;
-        }
-
         public void setSealNumber(String sealNumber) { this.sealNumber = sealNumber; }
 
         public void setStatus(SealStatus status) {
@@ -92,14 +88,15 @@ public final class Seal {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Seal seal = (Seal) o;
-        return id == seal.id && sampleId == seal.sampleId && Objects.equals(sealNumber, seal.sealNumber) && status == seal.status && Objects.equals(ownerUsername, seal.ownerUsername) && Objects.equals(createdAt, seal.createdAt) && Objects.equals(updatedAt, seal.updatedAt);
+        return id == seal.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sampleId, sealNumber, status, ownerUsername, createdAt, updatedAt);
+        return Objects.hash(id);
     }
 
     @Override

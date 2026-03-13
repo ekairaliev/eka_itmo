@@ -6,7 +6,6 @@ import java.util.Objects;
 public final class CustodyEvent {
     private final long id;              // назначается программой
     private final long sampleId;        // ссылка на Sample
-
     private String fromUser;            // до 64, не пусто
     private String toUser;              // до 64, не пусто
     private String location;            // до 64, не пусто
@@ -15,15 +14,7 @@ public final class CustodyEvent {
     private String ownerUsername;       // кто выполнил действие
     private final Instant createdAt;    // назначается программой
 
-    public CustodyEvent(long id,
-                        long sampleId,
-                        String fromUser,
-                        String toUser,
-                        String location,
-                        String comment,
-                        Instant transferredAt,
-                        String ownerUsername,
-                        Instant createdAt) {
+    public CustodyEvent(long id, long sampleId, String fromUser, String toUser, String location, String comment, Instant transferredAt, String ownerUsername, Instant createdAt) {
         this.id = id;
         this.sampleId = sampleId;
         this.fromUser = fromUser;

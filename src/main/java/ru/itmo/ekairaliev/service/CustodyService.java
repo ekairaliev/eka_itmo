@@ -19,16 +19,9 @@ public final class CustodyService {
         this.sampleService = sampleService;
     }
 
-    public CustodyEvent add(long sampleId,
-                            String fromUser,
-                            String toUser,
-                            String location,
-                            String comment,
-                            String ownerUsername) {
+    public CustodyEvent add(long sampleId, String fromUser, String toUser, String location, String comment, String ownerUsername) {
 
-        CustodyEventValidator.validateForCreate(
-                sampleId, fromUser, toUser, location, comment
-        );
+        CustodyEventValidator.validateForCreate(sampleId, fromUser, toUser, location, comment);
 
         if (!sampleService.exists(sampleId)) {
             throw new ValidationException("Ошибка: sample с id=" + sampleId + " не найден");

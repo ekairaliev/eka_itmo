@@ -5,11 +5,7 @@ import static ru.itmo.ekairaliev.validation.TextRules.*;
 public final class CustodyEventValidator {
     private CustodyEventValidator() {}
 
-    public static void validateForCreate(long sampleId,
-                                         String fromUser,
-                                         String toUser,
-                                         String location,
-                                         String comment) {
+    public static void validateForCreate(long sampleId, String fromUser, String toUser, String location, String comment) {
         if (sampleId <= 0) throw new ValidationException("Ошибка: sampleId должен быть > 0");
 
         fromUser = notBlank(fromUser, "from");
