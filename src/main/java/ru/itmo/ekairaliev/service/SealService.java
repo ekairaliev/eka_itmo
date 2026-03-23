@@ -54,6 +54,10 @@ public final class SealService {
         return seal;
     }
 
+    public List<Seal> getAll() {
+        return new ArrayList<>(seals.values());
+    }
+
     public Seal breakSeal(long id) {
         Seal seal = getById(id);
         if (seal.getStatus() == SealStatus.BROKEN) {
