@@ -2,13 +2,17 @@ package ru.itmo.ekairaliev.validation;
 
 import ru.itmo.ekairaliev.model.Seal;
 
-import static ru.itmo.ekairaliev.validation.TextRules.*;
+import static ru.itmo.ekairaliev.validation.TextRules.maxLen;
+import static ru.itmo.ekairaliev.validation.TextRules.notBlank;
 
 public final class SealValidator {
-    private SealValidator() {}
+    private SealValidator() {
+    }
 
     public static void validateForCreate(long sampleId, String sealNumber, String ownerUsername) {
-        if (sampleId <= 0) throw new ValidationException("Ошибка: sampleId должен быть > 0");
+        if (sampleId <= 0) {
+            throw new ValidationException("Ошибка: sampleId должен быть > 0");
+        }
 
         sealNumber = notBlank(sealNumber, "seal_number");
         maxLen(sealNumber, 64, "seal_number");
@@ -17,19 +21,31 @@ public final class SealValidator {
         maxLen(ownerUsername, 64, "owner_username");
     }
 
-    public static void validateEntity(Seal s) {
-        if (s == null) throw new ValidationException("Ошибка: seal=null");
-        if (s.getId() <= 0) throw new ValidationException("Ошибка: id должен быть > 0");
-        if (s.getSampleId() <= 0) throw new ValidationException("Ошибка: sampleId должен быть > 0");
+    public static void validateEntity(Seal seal) {
+        if (seal == null) {
+            throw new ValidationException("Ошибка: seal=null");
+        }
+        if (seal.getId() <= 0) {
+            throw new ValidationException("Ошибка: id должен быть > 0");
+        }
+        if (seal.getSampleId() <= 0) {
+            throw new ValidationException("Ошибка: sampleId должен быть > 0");
+        }
 
-        String num = notBlank(s.getSealNumber(), "seal_number");
-        maxLen(num, 64, "seal_number");
+        String sealNumber = notBlank(seal.getSealNumber(), "seal_number");
+        maxLen(sealNumber, 64, "seal_number");
 
-        String owner = notBlank(s.getOwnerUsername(), "owner_username");
-        maxLen(owner, 64, "owner_username");
+        String ownerUsername = notBlank(seal.getOwnerUsername(), "owner_username");
+        maxLen(ownerUsername, 64, "owner_username");
 
-        if (s.getStatus() == null) throw new ValidationException("Ошибка: status обязателен");
-        if (s.getCreatedAt() == null) throw new ValidationException("Ошибка: createdAt обязателен");
-        if (s.getUpdatedAt() == null) throw new ValidationException("Ошибка: updatedAt обязателен");
+        if (seal.getStatus() == null) {
+            throw new ValidationException("Ошибка: status обязателен");
+        }
+        if (seal.getCreatedAt() == null) {
+            throw new ValidationException("Ошибка: createdAt обязателен");
+        }
+        if (seal.getUpdatedAt() == null) {
+            throw new ValidationException("Ошибка: updatedAt обязателен");
+        }
     }
 }

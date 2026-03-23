@@ -6,7 +6,10 @@ import ru.itmo.ekairaliev.validation.SampleValidator;
 import ru.itmo.ekairaliev.validation.ValidationException;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class SampleService {
 
@@ -29,7 +32,6 @@ public final class SampleService {
 
         SampleValidator.validateEntity(sample);
         samples.put(id, sample);
-
         return sample;
     }
 
@@ -45,27 +47,8 @@ public final class SampleService {
         return new ArrayList<>(samples.values());
     }
 
-    public void remove(long id) {
-        if (samples.remove(id) == null) {
-            throw new ValidationException("Ошибка: sample с id=" + id + " не найден");
-        }
-    }
-
-    public Sample updateName(long id, String newName) {
-        Sample sample = getById(id);
-
-        SampleValidator.validateForCreate(newName);
-
-        sample.setName(newName.trim());
-        sample.touch();
-
-        SampleValidator.validateEntity(sample);
-        return sample;
-    }
-
     public Sample hold(long id) {
         Sample sample = getById(id);
-
         sample.setHoldStatus(SampleHoldStatus.ON_HOLD);
         sample.touch();
 
@@ -75,7 +58,6 @@ public final class SampleService {
 
     public Sample release(long id) {
         Sample sample = getById(id);
-
         sample.setHoldStatus(SampleHoldStatus.ACTIVE);
         sample.touch();
 

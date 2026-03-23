@@ -6,7 +6,10 @@ import ru.itmo.ekairaliev.validation.SealValidator;
 import ru.itmo.ekairaliev.validation.ValidationException;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class SealService {
     private final Map<Long, Seal> seals = new LinkedHashMap<>();
@@ -44,41 +47,31 @@ public final class SealService {
     }
 
     public Seal getById(long id) {
-        Seal s = seals.get(id);
-        if (s == null) throw new ValidationException("Ошибка: seal с id=" + id + " не найден");
-        return s;
-    }
-
-    public List<Seal> getAll() {
-        return new ArrayList<>(seals.values());
-    }
-
-    public void remove(long id) {
-        if (seals.remove(id) == null) {
+        Seal seal = seals.get(id);
+        if (seal == null) {
             throw new ValidationException("Ошибка: seal с id=" + id + " не найден");
         }
+        return seal;
     }
 
     public Seal breakSeal(long id) {
-        Seal s = getById(id);
-        if (s.getStatus() == SealStatus.BROKEN) {
+        Seal seal = getById(id);
+        if (seal.getStatus() == SealStatus.BROKEN) {
             throw new ValidationException("Ошибка: пломба уже BROKEN");
         }
-        s.setStatus(SealStatus.BROKEN);
-        s.touch();
-        SealValidator.validateEntity(s);
-        return s;
+        seal.setStatus(SealStatus.BROKEN);
+        seal.touch();
+        SealValidator.validateEntity(seal);
+        return seal;
     }
 
-    public Seal updateSealNumber(long id, String newSealNumber) {
-        Seal s = getById(id);
-
-        // update тоже должен валидироваться
-        SealValidator.validateForCreate(s.getSampleId(), newSealNumber, s.getOwnerUsername());
-
-        s.setSealNumber(newSealNumber.trim());
-        s.touch();
-        SealValidator.validateEntity(s);
-        return s;
+    public List<Seal> listBySample(long sampleId) {
+        List<Seal> result = new ArrayList<>();
+        for (Seal seal : seals.values()) {
+            if (seal.getSampleId() == sampleId) {
+                result.add(seal);
+            }
+        }
+        return result;
     }
 }

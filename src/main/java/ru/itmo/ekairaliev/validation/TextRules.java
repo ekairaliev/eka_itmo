@@ -1,23 +1,31 @@
 package ru.itmo.ekairaliev.validation;
 
 public final class TextRules {
-    private TextRules() {}
-
-    public static String norm(String s) {
-        return s == null ? null : s.trim();
+    private TextRules() {
     }
 
-    public static String notBlank(String s, String field) {
-        if (s == null || s.trim().isEmpty()) {
+    public static String norm(String value) {
+        return value == null ? null : value.trim();
+    }
+
+    public static String notBlank(String value, String field) {
+        if (value == null || value.trim().isEmpty()) {
             throw new ValidationException("Ошибка: " + field + " не может быть пустым");
         }
-        return s.trim();
+        return value.trim();
     }
 
-    public static String maxLen(String s, int max, String field) {
-        if (s != null && s.length() > max) {
+    public static String maxLen(String value, int max, String field) {
+        if (value != null && value.length() > max) {
             throw new ValidationException("Ошибка: " + field + " слишком длинное (макс. " + max + ")");
         }
-        return s;
+        return value;
+    }
+
+    public static String onlyLettersSpacesHyphen(String value, String field) {
+        if (value != null && !value.matches("[A-Za-zА-Яа-яЁё\\- ]+")) {
+            throw new ValidationException("Ошибка: " + field + " должно содержать только буквы");
+        }
+        return value;
     }
 }
