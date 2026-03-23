@@ -103,6 +103,11 @@ public final class CliApplication {
                 handleSealAdd(parseId(args.get(0), "sample_id"));
                 return false;
             }
+            case "seal_list" -> {
+                ensureArgCount(command, args, 0);
+                handleSealList();
+                return false;
+            }
             case "seal_show" -> {
                 ensureArgCount(command, args, 1);
                 handleSealShow(parseId(args.get(0), "seal_id"));
@@ -181,6 +186,26 @@ public final class CliApplication {
         String sealNumber = prompt("Номер пломбы");
         Seal seal = sealService.add(sampleId, sealNumber, "SYSTEM");
         System.out.println("OK seal_id=" + seal.getId());
+    }
+
+    private void handleSealList() {
+        List<Seal> seals = sealService.getAll();
+        if (seals.isEmpty()) {
+            System.out.println("Список seal пуст.");
+            return;
+        }
+
+        System.out.printf("%-6s %-10s %-20s %-10s %-17s%n", "ID", "SampleID", "SealNumber", "Status", "UpdatedAt");
+        for (Seal seal : seals) {
+            System.out.printf(
+                    "%-6d %-10d %-20s %-10s %-17s%n",
+                    seal.getId(),
+                    seal.getSampleId(),
+                    trimForTable(seal.getSealNumber(), 20),
+                    seal.getStatus(),
+                    formatInstant(seal.getUpdatedAt())
+            );
+        }
     }
 
     private void handleSealShow(long sealId) {
@@ -316,6 +341,7 @@ public final class CliApplication {
         System.out.println("sample_add");
         System.out.println("sample_list");
         System.out.println("seal_add <sample_id>");
+        System.out.println("seal_list");
         System.out.println("seal_show <seal_id>");
         System.out.println("seal_break <seal_id>");
         System.out.println("cust_add <sample_id>");

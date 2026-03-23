@@ -11,6 +11,7 @@
 - создание `Sample` через консоль
 - просмотр всех созданных `Sample`
 - добавление пломбы `Seal` к образцу
+- просмотр всех созданных `Seal`
 - создание события передачи `CustodyEvent`
 - просмотр истории передачи образца
 - перевод образца в `ON_HOLD` и обратно в `ACTIVE`
@@ -64,6 +65,7 @@ java -cp target/classes ru.itmo.ekairaliev.cli.Main
 - `sample_add`
 - `sample_list`
 - `seal_add <sample_id>`
+- `seal_list`
 - `seal_show <seal_id>`
 - `seal_break <seal_id>`
 - `cust_add <sample_id>`
@@ -120,6 +122,10 @@ ID     Name                           Status       UpdatedAt
 > seal_add 1
 Номер пломбы: SEAL-9911
 OK seal_id=1
+
+> seal_list
+ID     SampleID   SealNumber           Status     UpdatedAt
+1      1          SEAL-9911            ACTIVE     2026-03-23 12:01
 
 > cust_add 1
 От кого (только имя): Ivan
