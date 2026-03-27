@@ -23,10 +23,7 @@ public final class SealService {
 
     public Seal add(long sampleId, String sealNumber, String ownerUsername) {
         SealValidator.validateForCreate(sampleId, sealNumber, ownerUsername);
-
-        if (!sampleService.exists(sampleId)) {
-            throw new ValidationException("Ошибка: sample с id=" + sampleId + " не найден");
-        }
+        sampleService.getById(sampleId);
 
         long id = nextId++;
         Instant now = Instant.now();
@@ -47,7 +44,7 @@ public final class SealService {
     }
 
     public Seal getById(long id) {
-        validateId(id, "seal_id");
+        validateId(id);
 
         Seal seal = seals.get(id);
         if (seal == null) {
@@ -65,7 +62,7 @@ public final class SealService {
     }
 
     public Seal update(long id, String sealNumber) {
-        validateId(id, "seal_id");
+        validateId(id);
         SealValidator.validateForUpdate(sealNumber);
 
         Seal seal = getById(id);
@@ -81,15 +78,15 @@ public final class SealService {
     }
 
     public Seal remove(long id) {
-        validateId(id, "seal_id");
+        validateId(id);
 
         Seal seal = getById(id);
         seals.remove(id);
         return seal;
     }
 
-    public Seal breakSeal(long id) {
-        validateId(id, "seal_id");
+    public void breakSeal(long id) {
+        validateId(id);
 
         Seal seal = getById(id);
         if (seal.getStatus() == SealStatus.BROKEN) {
@@ -99,19 +96,6 @@ public final class SealService {
         seal.setStatus(SealStatus.BROKEN);
         seal.touch();
         SealValidator.validateEntity(seal);
-        return seal;
-    }
-
-    public List<Seal> listBySample(long sampleId) {
-        validateSampleId(sampleId);
-
-        List<Seal> result = new ArrayList<>();
-        for (Seal seal : seals.values()) {
-            if (seal.getSampleId() == sampleId) {
-                result.add(seal);
-            }
-        }
-        return result;
     }
 
     public boolean hasAnyBySample(long sampleId) {
@@ -125,9 +109,9 @@ public final class SealService {
         return false;
     }
 
-    private void validateId(long id, String fieldName) {
+    private void validateId(long id) {
         if (id <= 0) {
-            throw new ValidationException("Ошибка: " + fieldName + " должен быть > 0");
+            throw new ValidationException("Ошибка: seal_id должен быть > 0");
         }
     }
 

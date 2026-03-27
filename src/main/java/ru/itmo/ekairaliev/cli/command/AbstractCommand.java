@@ -42,16 +42,16 @@ public abstract class AbstractCommand {
         }
     }
 
-    protected final int parsePositiveInt(String rawValue, String fieldName) {
+    protected final int parsePositiveInt(String rawValue) {
         final int value;
         try {
             value = Integer.parseInt(rawValue);
         } catch (NumberFormatException e) {
-            throw new CommandException("Ошибка: " + fieldName + " должно быть числом");
+            throw new CommandException("Ошибка: N должно быть числом");
         }
 
         if (value <= 0) {
-            throw new CommandException("Ошибка: " + fieldName + " должно быть > 0");
+            throw new CommandException("Ошибка: N должно быть > 0");
         }
         return value;
     }

@@ -62,7 +62,7 @@ public final class CustodyService {
     }
 
     public CustodyEvent getById(long id) {
-        validateId(id, "event_id");
+        validateId(id);
 
         CustodyEvent event = events.get(id);
         if (event == null) {
@@ -82,7 +82,7 @@ public final class CustodyService {
     }
 
     public CustodyEvent update(long id, String fromUser, String toUser, String location, String comment) {
-        validateId(id, "event_id");
+        validateId(id);
         CustodyEventValidator.validateForUpdate(fromUser, toUser, location, comment);
 
         CustodyEvent event = getById(id);
@@ -98,7 +98,7 @@ public final class CustodyService {
     }
 
     public CustodyEvent remove(long id) {
-        validateId(id, "event_id");
+        validateId(id);
 
         CustodyEvent event = getById(id);
         ensureLastEvent(event);
@@ -108,10 +108,7 @@ public final class CustodyService {
 
     public List<CustodyEvent> listBySample(long sampleId) {
         validateSampleId(sampleId);
-
-        if (!sampleService.exists(sampleId)) {
-            throw new ValidationException("Ошибка: sample с id=" + sampleId + " не найден");
-        }
+        sampleService.getById(sampleId);
 
         return events.values().stream()
                 .filter(event -> event.getSampleId() == sampleId)
@@ -134,7 +131,7 @@ public final class CustodyService {
         if (list.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.ofNullable(list.get(0).getToUser());
+        return Optional.ofNullable(list.getFirst().getToUser());
     }
 
     public List<CustodyEvent> listBySampleChronological(long sampleId) {
@@ -152,14 +149,14 @@ public final class CustodyService {
 
     private void ensureLastEvent(CustodyEvent event) {
         List<CustodyEvent> sampleEvents = listBySample(event.getSampleId());
-        if (!sampleEvents.isEmpty() && sampleEvents.get(0).getId() != event.getId()) {
+        if (!sampleEvents.isEmpty() && sampleEvents.getFirst().getId() != event.getId()) {
             throw new ValidationException("Ошибка: можно изменять или удалять только последнее custody_event для sample id=" + event.getSampleId());
         }
     }
 
-    private void validateId(long id, String fieldName) {
+    private void validateId(long id) {
         if (id <= 0) {
-            throw new ValidationException("Ошибка: " + fieldName + " должен быть > 0");
+            throw new ValidationException("Ошибка: event_id должен быть > 0");
         }
     }
 

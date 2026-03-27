@@ -3,88 +3,66 @@ package ru.itmo.ekairaliev.model;
 import java.time.Instant;
 import java.util.Objects;
 
-
 public final class Seal {
-        // Уникальный номер пломбы. Программа назначает сама.
-        private final long id;
+    private final long id;
+    private final long sampleId;
+    private String sealNumber;
+    private SealStatus status;
+    private final String ownerUsername;
+    private final Instant createdAt;
+    private Instant updatedAt;
 
-        // К какому образцу относится (id образца).
-        // Должен ссылаться на реально существующий Sample.
-        private final long sampleId;
+    public Seal(long id, long sampleId, SealStatus status, String sealNumber, String ownerUsername,
+                Instant createdAt, Instant updatedAt) {
+        this.id = id;
+        this.sampleId = sampleId;
+        this.status = status;
+        this.sealNumber = sealNumber;
+        this.ownerUsername = ownerUsername;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
-        // Номер пломбы (например "SEAL-9911").
-        // Нельзя пустое. До 64 символов.
-        private String sealNumber;
+    public long getId() {
+        return id;
+    }
 
-        // Статус пломбы: ACTIVE или BROKEN.
-        private SealStatus status;
+    public long getSampleId() {
+        return sampleId;
+    }
 
-        // Кто поставил пломбу (логин).
-        // На ранних этапах можно "SYSTEM".
-        private String ownerUsername;
+    public String getSealNumber() {
+        return sealNumber;
+    }
 
-        // Когда поставили. Программа ставит автоматически.
-        private final Instant createdAt;
+    public SealStatus getStatus() {
+        return status;
+    }
 
-        // Когда изменяли (например, ломали).
-        // Программа обновляет автоматически.
-        private Instant updatedAt;
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
 
-        //конструктор 1
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 
-        public Seal(long id, long sampleId, SealStatus status, String sealNumber, String ownerUsername, Instant createdAt, Instant updatedAt) {
-            this.id = id;
-            this.sampleId = sampleId;
-            this.status = status;
-            this.sealNumber = sealNumber;
-            this.ownerUsername = ownerUsername;
-            this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
-        }
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
 
-        //геттеры
-        public long getId() {
-            return id;
-        }
+    public void setSealNumber(String sealNumber) {
+        this.sealNumber = sealNumber;
+    }
 
-        public Instant getUpdatedAt() {
-            return updatedAt;
-        }
+    public void setStatus(SealStatus status) {
+        this.status = status;
+    }
 
-        public Instant getCreatedAt() {
-            return createdAt;
-        }
-
-        public String getOwnerUsername() {
-            return ownerUsername;
-        }
-
-        public SealStatus getStatus() {
-            return status;
-        }
-
-        public String getSealNumber() {
-            return sealNumber;
-        }
-
-        public long getSampleId() {
-            return sampleId;
-        }
-
-        //сеттеры
-
-        public void setSealNumber(String sealNumber) { this.sealNumber = sealNumber; }
-
-        public void setStatus(SealStatus status) {
-            this.status = status;
-        }
-
-        public void setOwnerUsername(String ownerUsername) {
-            this.ownerUsername = ownerUsername;
-        }
-
-    //помечаем тачем что объект изменили
-    public void touch() { this.updatedAt = Instant.now(); }
+    // Помечаем, что объект был изменен.
+    public void touch() {
+        this.updatedAt = Instant.now();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -112,5 +90,3 @@ public final class Seal {
                 '}';
     }
 }
-
-

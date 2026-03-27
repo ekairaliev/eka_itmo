@@ -44,7 +44,7 @@ public final class SampleService {
     }
 
     public Sample getById(long id) {
-        validateId(id, "sample_id");
+        validateId(id);
 
         Sample sample = samples.get(id);
         if (sample == null) {
@@ -62,7 +62,7 @@ public final class SampleService {
     }
 
     public Sample update(long id, String name) {
-        validateId(id, "sample_id");
+        validateId(id);
         SampleValidator.validateForUpdate(name);
 
         Sample sample = getById(id);
@@ -74,7 +74,7 @@ public final class SampleService {
     }
 
     public Sample remove(long id) {
-        validateId(id, "sample_id");
+        validateId(id);
         Sample sample = getById(id);
 
         if (sealService != null && sealService.hasAnyBySample(id)) {
@@ -88,43 +88,38 @@ public final class SampleService {
         return sample;
     }
 
-    public Sample hold(long id) {
-        validateId(id, "sample_id");
+    public void hold(long id) {
+        validateId(id);
 
         Sample sample = getById(id);
         if (sample.getHoldStatus() == SampleHoldStatus.ON_HOLD) {
             throw new ValidationException("Ошибка: sample с id=" + id + " уже ON_HOLD");
         }
 
-        return updateHoldStatus(sample, SampleHoldStatus.ON_HOLD);
+        updateHoldStatus(sample, SampleHoldStatus.ON_HOLD);
     }
 
-    public Sample release(long id) {
-        validateId(id, "sample_id");
+    public void release(long id) {
+        validateId(id);
 
         Sample sample = getById(id);
         if (sample.getHoldStatus() == SampleHoldStatus.ACTIVE) {
             throw new ValidationException("Ошибка: sample с id=" + id + " уже ACTIVE");
         }
 
-        return updateHoldStatus(sample, SampleHoldStatus.ACTIVE);
+        updateHoldStatus(sample, SampleHoldStatus.ACTIVE);
     }
 
-    public boolean exists(long id) {
-        return samples.containsKey(id);
-    }
-
-    private Sample updateHoldStatus(Sample sample, SampleHoldStatus holdStatus) {
+    private void updateHoldStatus(Sample sample, SampleHoldStatus holdStatus) {
         sample.setHoldStatus(holdStatus);
         sample.touch();
 
         SampleValidator.validateEntity(sample);
-        return sample;
     }
 
-    private void validateId(long id, String fieldName) {
+    private void validateId(long id) {
         if (id <= 0) {
-            throw new ValidationException("Ошибка: " + fieldName + " должен быть > 0");
+            throw new ValidationException("Ошибка: sample_id должен быть > 0");
         }
     }
 }

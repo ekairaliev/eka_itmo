@@ -31,7 +31,7 @@ public final class CommandTokenizer {
             }
 
             if (Character.isWhitespace(ch)) {
-                if (current.length() > 0) {
+                if (!current.isEmpty()) {
                     tokens.add(current.toString());
                     current.setLength(0);
                 }
@@ -45,7 +45,7 @@ public final class CommandTokenizer {
             throw new CommandException("Ошибка: незакрытая кавычка в команде");
         }
 
-        if (current.length() > 0) {
+        if (!current.isEmpty()) {
             tokens.add(current.toString());
         }
         return tokens;
