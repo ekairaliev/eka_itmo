@@ -15,6 +15,10 @@ public final class SampleValidator {
         maxLen(name, 64, "name");
     }
 
+    public static void validateForUpdate(String name) {
+        validateForCreate(name);
+    }
+
     public static void validateEntity(Sample sample) {
         if (sample == null) {
             throw new ValidationException("Ошибка: sample=null");

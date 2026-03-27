@@ -15,6 +15,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class CustodyService {
+    private static final Comparator<CustodyEvent> REVERSED_EVENT_ORDER =
+            Comparator.comparing(CustodyEvent::getTransferredAt)
+                    .thenComparingLong(CustodyEvent::getId)
+                    .reversed();
+
+    private static final Comparator<CustodyEvent> CHRONOLOGICAL_EVENT_ORDER =
+            Comparator.comparing(CustodyEvent::getTransferredAt)
+                    .thenComparingLong(CustodyEvent::getId);
 
     private final Map<Long, CustodyEvent> events = new LinkedHashMap<>();
     private long nextId = 1;
@@ -54,6 +62,8 @@ public final class CustodyService {
     }
 
     public CustodyEvent getById(long id) {
+        validateId(id, "event_id");
+
         CustodyEvent event = events.get(id);
         if (event == null) {
             throw new ValidationException("Ошибка: custody_event с id=" + id + " не найден");
@@ -61,14 +71,51 @@ public final class CustodyService {
         return event;
     }
 
+    public List<CustodyEvent> list() {
+        return getAll();
+    }
+
+    public List<CustodyEvent> getAll() {
+        return events.values().stream()
+                .sorted(REVERSED_EVENT_ORDER)
+                .collect(Collectors.toList());
+    }
+
+    public CustodyEvent update(long id, String fromUser, String toUser, String location, String comment) {
+        validateId(id, "event_id");
+        CustodyEventValidator.validateForUpdate(fromUser, toUser, location, comment);
+
+        CustodyEvent event = getById(id);
+        ensureLastEvent(event);
+
+        event.setFromUser(fromUser.trim());
+        event.setToUser(toUser.trim());
+        event.setLocation(location.trim());
+        event.setComment(comment == null || comment.trim().isEmpty() ? null : comment.trim());
+
+        CustodyEventValidator.validateEntity(event);
+        return event;
+    }
+
+    public CustodyEvent remove(long id) {
+        validateId(id, "event_id");
+
+        CustodyEvent event = getById(id);
+        ensureLastEvent(event);
+        events.remove(id);
+        return event;
+    }
+
     public List<CustodyEvent> listBySample(long sampleId) {
+        validateSampleId(sampleId);
+
         if (!sampleService.exists(sampleId)) {
             throw new ValidationException("Ошибка: sample с id=" + sampleId + " не найден");
         }
 
         return events.values().stream()
                 .filter(event -> event.getSampleId() == sampleId)
-                .sorted(Comparator.comparing(CustodyEvent::getTransferredAt).reversed())
+                .sorted(REVERSED_EVENT_ORDER)
                 .collect(Collectors.toList());
     }
 
@@ -92,7 +139,33 @@ public final class CustodyService {
 
     public List<CustodyEvent> listBySampleChronological(long sampleId) {
         return listBySample(sampleId).stream()
-                .sorted(Comparator.comparing(CustodyEvent::getTransferredAt))
+                .sorted(CHRONOLOGICAL_EVENT_ORDER)
                 .collect(Collectors.toList());
+    }
+
+    public boolean hasAnyBySample(long sampleId) {
+        validateSampleId(sampleId);
+
+        return events.values().stream()
+                .anyMatch(event -> event.getSampleId() == sampleId);
+    }
+
+    private void ensureLastEvent(CustodyEvent event) {
+        List<CustodyEvent> sampleEvents = listBySample(event.getSampleId());
+        if (!sampleEvents.isEmpty() && sampleEvents.get(0).getId() != event.getId()) {
+            throw new ValidationException("Ошибка: можно изменять или удалять только последнее custody_event для sample id=" + event.getSampleId());
+        }
+    }
+
+    private void validateId(long id, String fieldName) {
+        if (id <= 0) {
+            throw new ValidationException("Ошибка: " + fieldName + " должен быть > 0");
+        }
+    }
+
+    private void validateSampleId(long sampleId) {
+        if (sampleId <= 0) {
+            throw new ValidationException("Ошибка: sample_id должен быть > 0");
+        }
     }
 }

@@ -21,6 +21,11 @@ public final class SealValidator {
         maxLen(ownerUsername, 64, "owner_username");
     }
 
+    public static void validateForUpdate(String sealNumber) {
+        sealNumber = notBlank(sealNumber, "seal_number");
+        maxLen(sealNumber, 64, "seal_number");
+    }
+
     public static void validateEntity(Seal seal) {
         if (seal == null) {
             throw new ValidationException("Ошибка: seal=null");

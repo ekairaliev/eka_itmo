@@ -15,22 +15,11 @@ public final class CustodyEventValidator {
         if (sampleId <= 0) {
             throw new ValidationException("Ошибка: sampleId должен быть > 0");
         }
+        validatePayload(fromUser, toUser, location, comment);
+    }
 
-        fromUser = notBlank(fromUser, "from");
-        maxLen(fromUser, 64, "from");
-        onlyLettersSpacesHyphen(fromUser, "from");
-
-        toUser = notBlank(toUser, "to");
-        maxLen(toUser, 64, "to");
-        onlyLettersSpacesHyphen(toUser, "to");
-
-        location = notBlank(location, "location");
-        maxLen(location, 64, "location");
-
-        comment = norm(comment);
-        if (comment != null && !comment.isEmpty()) {
-            maxLen(comment, 128, "comment");
-        }
+    public static void validateForUpdate(String fromUser, String toUser, String location, String comment) {
+        validatePayload(fromUser, toUser, location, comment);
     }
 
     public static void validateEntity(CustodyEvent event) {
@@ -57,6 +46,24 @@ public final class CustodyEventValidator {
         }
         if (event.getCreatedAt() == null) {
             throw new ValidationException("Ошибка: createdAt обязателен");
+        }
+    }
+
+    private static void validatePayload(String fromUser, String toUser, String location, String comment) {
+        fromUser = notBlank(fromUser, "from");
+        maxLen(fromUser, 64, "from");
+        onlyLettersSpacesHyphen(fromUser, "from");
+
+        toUser = notBlank(toUser, "to");
+        maxLen(toUser, 64, "to");
+        onlyLettersSpacesHyphen(toUser, "to");
+
+        location = notBlank(location, "location");
+        maxLen(location, 64, "location");
+
+        comment = norm(comment);
+        if (comment != null && !comment.isEmpty()) {
+            maxLen(comment, 128, "comment");
         }
     }
 }
