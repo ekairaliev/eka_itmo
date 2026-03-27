@@ -48,6 +48,8 @@ public final class Main {
                 new SampleShowCommand(),
                 new SampleUpdateCommand(),
                 new SampleRemoveCommand(),
+                new SampleHoldCommand(),
+                new SampleReleaseCommand(),
                 new SealAddCommand(),
                 new SealListCommand(),
                 new SealShowCommand(),
@@ -59,8 +61,6 @@ public final class Main {
                 new CustodyShowCommand(),
                 new CustodyUpdateCommand(),
                 new CustodyRemoveCommand(),
-                new SampleHoldCommand(),
-                new SampleReleaseCommand(),
                 new CustodyCheckCommand(),
                 new CustodyExportCommand()
         ));
